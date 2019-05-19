@@ -1,0 +1,64 @@
+---
+layout: post
+title:  "‎文教讲座记录查询数据更新操作"
+date:   2019-05-19 09:53:06 +0800
+categories: operation
+---
+
+本文介绍小猴偷米文化素质教育中心查询网站数据更新方法。
+
+## 打卡记录
+
+该记录数据来自于财务处一卡通中心，需要联系财务处老师获取。接收数据后首先需要鉴别数据格式：
+
+第一种格式如下起始：
+
+```
+  <style>.text { mso-number-format:\@; } </style><table cellspacing="0" rules="all" border="1" style="border-collapse:collapse;">
+	<tr>
+		<td>帐号</td><td>学工号</td><td>姓名</td><td>性别</td><td>考勤机</td><td>进出标志</td><td>发生时间</td><td>身份</td><td>部门</td><td>宿舍</td>
+  ...
+```
+
+第二种数据格式如下起始：
+
+```
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=gb2312">
+...
+```
+
+数据格式不同将决定使用不同的导入工具。
+
+讲座查询服务器使用 Windows Server 2016 DataCenter 版操作系统，通过 RDP 挂载数据文件并登录图形化桌面。
+
+对于第一种数据格式，使用 `/c/seu-lecture-service/webservice/tools/importCardRecord.js` 脚本进行导入；第二种数据格式使用 `/c/seu-lecture-service/webservice/tools/importCardRecordHTML.js` 进行导入。
+
+操作命令格式为：
+
+```
+node <脚本名称> -i <文件路径>
+```
+
+例如：
+
+```
+node .\importCardRecordHTML.js -i \\tsclient\考勤数据\20190511-20190517数据.xls
+```
+
+导入成功后文件将被重新命名，防止手滑造成数据重复。注意保留导入数据的原始文件，以备不时之需。
+
+## 讲座记录
+
+讲座记录由文教中心提供，一般为 xlsx 格式，具体情况需具体分析，数据量较小时可以手工插库。
+
+需要注意的是，讲座记录更新后需要重启服务才能保证数据准确性。
+
+
+
+
+
